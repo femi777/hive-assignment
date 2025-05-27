@@ -97,7 +97,7 @@ module "app" {
       to_port         = 80
       protocol        = "tcp"
       security_groups = []            
-      cidr_blocks     = ["0.0.0.0/0"]             fallback
+      cidr_blocks     = ["0.0.0.0/0"]
     }
  ]
  ecs_egress_rules = [
