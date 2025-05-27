@@ -48,11 +48,64 @@ This Terraform project provisions a complete container-based infrastructure on A
 | `ecs_ingress_rules` | `list(object)`      | Port 80 from ALB SG    | Ingress for ECS tasks                |
 | `ecs_egress_rules`  | `list(object)`      | Allow all              | Egress for ECS tasks                 |
 
-### Example subnet structure:
+### Usage:
 ```hcl
-subnets = {
-  vpc_0 = {
-    public_a = "10.0.1.0/24"
-    public_b = "10.0.2.0/24"
+module "app" {
+  source = "./example"
+  project_name = "hive"
+  registry_name = "hive-registry
+  family = "nginx"
+  network_mode = "awsvpc"
+  container_image = "123456789012.dkr.ecr.us-east-1.amazonaws.com/nginx:latest"
+  alb_load_balancer_type = "application"
+  alb_internal_external = "false"
+  container_settings = {
+    name = "nginx"
+    portMappings = [
+      {
+        containerPort = 80
+        protocol      = "tcp"
+      }
+    ]
   }
+  subnets = {
+      vpc_0 = {
+      public_a = "10.0.1.0/24"
+      public_b = "10.0.2.0/24"
+    }
+  }
+  alb_ingress_rules = [
+    {
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  ]
+  alb_egress_rules = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  ]
+ cidr_blocks = "10.0.0.0/16"
+ ecs_ingress_rules = [
+    {
+      from_port       = 80
+      to_port         = 80
+      protocol        = "tcp"
+      security_groups = []            
+      cidr_blocks     = ["0.0.0.0/0"]             fallback
+    }
+ ]
+ ecs_egress_rules = [
+   {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+ ]
 }
