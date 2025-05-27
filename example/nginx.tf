@@ -1,0 +1,4 @@
+module "nginx" {
+  source = "../module"
+  
+}
